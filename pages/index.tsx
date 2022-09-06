@@ -5,8 +5,9 @@ import styled from 'styled-components'
 import Header from '../components/Header'
 
 const Main = styled.main`
+  position: absolute;
+  top: 3em;
   width: 100%;
-  background-color: #e0561f;
 `;
 const Container = styled.div`
   width: 100%;
@@ -15,9 +16,13 @@ const Container = styled.div`
   align-items: center;
 `;
 const Section = styled.section`
-  padding: 4em;
+  scroll-margin-top: 3em;
+  padding: 2em;
   width: 100%;
   height: 100vh;
+  &:nth-child(2n+1){
+    background-color: #D3411F;
+  }
 `;
 
 const Home: NextPage = () => {
