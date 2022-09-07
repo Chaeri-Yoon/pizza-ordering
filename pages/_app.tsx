@@ -1,8 +1,15 @@
-import '../styles/globals.css'
-import type { AppProps } from 'next/app'
+import { Fragment } from 'react';
+import type { AppProps } from 'next/app';
+import '../styles/globals.css';
+import Header from '../components/Header';
 
 function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
+  return (
+    <Fragment>
+      <Header />
+      <Component {...pageProps} />
+    </Fragment>
+  )
 }
 
-export default MyApp
+export default MyApp;

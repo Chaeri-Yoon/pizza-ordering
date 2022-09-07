@@ -1,8 +1,7 @@
-import { Fragment } from 'react'
-import type { NextPage } from 'next'
-import Head from 'next/head'
-import styled from 'styled-components'
-import Header from '../components/Header'
+import { Fragment } from 'react';
+import type { NextPage } from 'next';
+import Head from 'next/head';
+import styled from 'styled-components';
 
 const Main = styled.main`
   position: absolute;
@@ -33,7 +32,6 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Main>
-        <Header />
         <Container>
           <Section id="home">Home</Section>
           <Section id="menu">Menu</Section>
@@ -42,6 +40,6 @@ const Home: NextPage = () => {
       </Main>
     </Fragment>
   )
-}
+};
 
-export default Home
+export default Home;

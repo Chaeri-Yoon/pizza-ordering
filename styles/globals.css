@@ -15,10 +15,15 @@ a {
   box-sizing: border-box;
 }
 
+input[type="submit"]:hover {
+  cursor: pointer;
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
   }
+
   body {
     color: white;
     background: black;

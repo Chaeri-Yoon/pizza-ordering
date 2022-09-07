@@ -1,7 +1,7 @@
-import Link from 'next/link'
-import styled from 'styled-components'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPizzaSlice } from '@fortawesome/free-solid-svg-icons'
+import Link from 'next/link';
+import styled from 'styled-components';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPizzaSlice } from '@fortawesome/free-solid-svg-icons';
 
 const Container = styled.div`
     position: fixed;
@@ -13,8 +13,7 @@ const Container = styled.div`
     justify-content: center;
     align-items: center;
 
-    /* background-color: #D3411F; */
-    background-color: black;
+    background-color: #D3411F;
     color: white;
     z-index: 99;
 
@@ -69,13 +68,13 @@ export default () => {
                 </a>
             </Link>
             <NavContainer>
-                <Link href="#home">Home</Link>
-                <Link href="#menu">Menu</Link>
-                <Link href="#contact">Contact</Link>
+                <Link href="/#home">Home</Link>
+                <Link href="/#menu">Menu</Link>
+                <Link href="/#contact">Contact</Link>
             </NavContainer>
             <UserContainer>
-                <span>Join</span>
-                <span>Login</span>
+                <Link href="/join">Join</Link>
+                <Link href="/login">Login</Link>
             </UserContainer>
         </Container>
     )
