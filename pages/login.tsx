@@ -25,7 +25,7 @@ const Login: NextPage = () => {
                 <Form>
                     <input {...register("email", { required: true })} type="email" placeholder="email" />
                     <input {...register("password", { required: true })} type="password" placeholder="password" />
-                    <input type="submit" value='submit' />
+                    <input type="submit" value='Sign In' />
                 </Form>
             </LoginMain>
         </Fragment>
