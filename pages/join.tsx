@@ -1,11 +1,12 @@
 import { Fragment } from 'react';
 import type { NextPage } from 'next';
 import Head from "next/head";
-import styled from 'styled-components';
+import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/router';
+import { ErrorMessage } from '@hookform/error-message';
 import { Main } from '../components/styles/StyleComponents';
 import { Form, FormInputContainer, FormErrorMessageText, FormSubmitButton } from '../components/styles/FormStyleComponents';
-import { useForm } from 'react-hook-form';
-import { ErrorMessage } from '@hookform/error-message';
+import styled from 'styled-components';
 
 const JoinMain = styled(Main)`
     height: calc(100vh - 3em);
@@ -15,8 +16,15 @@ const JoinMain = styled(Main)`
 
     background-color: #D3411F;
 `;
+interface IForm {
+    email: string,
+    nickname: string,
+    password: string,
+    password_confirm: string
+}
 const Join: NextPage = () => {
-    const { register, handleSubmit, watch, formState: { errors, isValid }, setError, clearErrors } = useForm({ mode: 'onChange' });
+    const router = useRouter();
+    const { register, handleSubmit, watch, formState: { errors, isValid }, setError, clearErrors } = useForm<IForm>({ mode: 'onChange' });
     const passwordValue = watch('password');
     const passwordConfirmValue = watch('password_confirm');
     const isMatchWithConfirm = (value: string) => {
@@ -26,6 +34,15 @@ const Join: NextPage = () => {
         return isMatch;
     }
     const isMatchWithPassword = (value: string) => (value === passwordValue) || 'Password does not match.';
+    const onSubmit = (data: IForm) => {
+        fetch('/api/join', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        }).then(() => router.push('/'));
+    }
     return (
         <Fragment>
             <Head>
@@ -33,7 +50,7 @@ const Join: NextPage = () => {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <JoinMain>
-                <Form>
+                <Form onSubmit={handleSubmit(onSubmit)}>
                     <>
                         <FormInputContainer>
                             <input {...register("email", {
@@ -75,5 +92,4 @@ const Join: NextPage = () => {
         </Fragment>
     )
 };
-
 export default Join;

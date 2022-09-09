@@ -4,6 +4,9 @@ const nextConfig = {
   swcMinify: true,
   compiler: {
     styledComponents: true
+  },
+  env: {
+    MONGODB_URL: process.env.MONGODB_URL
   }
 }
 
