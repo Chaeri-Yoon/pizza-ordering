@@ -1,9 +1,11 @@
 import { Fragment } from 'react';
 import type { NextPage } from 'next';
 import Head from "next/head";
-import styled from 'styled-components';
-import { Main, Form } from '../components/StyleComponents';
 import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/router';
+import { Main } from '../components/styles/StyleComponents';
+import { Form, FormInputContainer, FormSubmitButton } from '../components/styles/FormStyleComponents';
+import styled from 'styled-components';
 
 const LoginMain = styled(Main)`
     height: calc(100vh - 3em);
@@ -13,8 +15,22 @@ const LoginMain = styled(Main)`
 
     background-color: #D3411F;
 `;
+interface IForm {
+    email: string,
+    password: string,
+}
 const Login: NextPage = () => {
-    const { register, handleSubmit } = useForm();
+    const router = useRouter();
+    const { register, handleSubmit, formState: { isValid } } = useForm<IForm>({ mode: 'onChange' });
+    const onSubmit = (data: IForm) => {
+        fetch('/api/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        }).then(() => router.push('/'));
+    }
     return (
         <Fragment>
             <Head>
@@ -22,10 +38,14 @@ const Login: NextPage = () => {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <LoginMain>
-                <Form>
-                    <input {...register("email", { required: true })} type="email" placeholder="email" />
-                    <input {...register("password", { required: true })} type="password" placeholder="password" />
-                    <input type="submit" value='Sign In' />
+                <Form onSubmit={handleSubmit(onSubmit)}>
+                    <FormInputContainer>
+                        <input {...register("email", { required: "Enter your email" })} type="email" placeholder="email" />
+                    </FormInputContainer>
+                    <FormInputContainer>
+                        <input {...register("password", { required: "Enter your password" })} type="password" placeholder="password" />
+                    </FormInputContainer>
+                    <FormSubmitButton disabled={!isValid}>Sign In</FormSubmitButton>
                 </Form>
             </LoginMain>
         </Fragment>

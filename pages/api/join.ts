@@ -1,12 +1,16 @@
 import { NextApiRequest, NextApiResponse } from "next";
+import { encryptPassword } from "../../lib/password";
 import User from '../../models/user';
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
+    const { body: { email, nickname, password } } = req;
+    const passwordInfo = encryptPassword(password);
     try {
-        const { body: { email, nickname } } = req;
         await User.create({
             email,
-            nickname
+            nickname,
+            hash: passwordInfo.hash,
+            salt: passwordInfo.salt
         });
         res.status(200).json({ message: "DB success!" });
     }
