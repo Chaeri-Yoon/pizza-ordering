@@ -1,8 +1,9 @@
-import { Fragment } from 'react';
+import { Fragment, useEffect } from 'react';
 import type { NextPage } from 'next';
 import Head from "next/head";
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/router';
+import useApi from '../lib/useApi';
 import { Main } from '../components/styles/StyleComponents';
 import { Form, FormInputContainer, FormSubmitButton } from '../components/styles/FormStyleComponents';
 import styled from 'styled-components';
@@ -21,16 +22,12 @@ interface IForm {
 }
 const Login: NextPage = () => {
     const router = useRouter();
+    const [loginRequest, { loading: loginLoading, data: loginData }] = useApi('/api/login');
     const { register, handleSubmit, formState: { isValid } } = useForm<IForm>({ mode: 'onChange' });
-    const onSubmit = (data: IForm) => {
-        fetch('/api/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        }).then(() => router.push('/'));
-    }
+    const onSubmit = (data: IForm) => loginRequest(data);
+    useEffect(() => {
+        if (!loginLoading && loginData) router.push('/');
+    }, [loginLoading]);
     return (
         <Fragment>
             <Head>

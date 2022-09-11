@@ -1,9 +1,10 @@
-import { Fragment } from 'react';
+import { Fragment, useEffect } from 'react';
 import type { NextPage } from 'next';
 import Head from "next/head";
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/router';
 import { ErrorMessage } from '@hookform/error-message';
+import useApi from '../lib/useApi';
 import { Main } from '../components/styles/StyleComponents';
 import { Form, FormInputContainer, FormErrorMessageText, FormSubmitButton } from '../components/styles/FormStyleComponents';
 import styled from 'styled-components';
@@ -24,6 +25,7 @@ interface IForm {
 }
 const Join: NextPage = () => {
     const router = useRouter();
+    const [formSubmitRequest, { loading: formSubmitLoading, data: formSubmitData }] = useApi('/api/join');
     const { register, handleSubmit, watch, formState: { errors, isValid }, setError, clearErrors } = useForm<IForm>({ mode: 'onChange' });
     const passwordValue = watch('password');
     const passwordConfirmValue = watch('password_confirm');
@@ -34,15 +36,10 @@ const Join: NextPage = () => {
         return isMatch;
     }
     const isMatchWithPassword = (value: string) => (value === passwordValue) || 'Password does not match.';
-    const onSubmit = (data: IForm) => {
-        fetch('/api/join', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        }).then(() => router.push('/'));
-    }
+    const onSubmit = (data: IForm) => formSubmitRequest(data);
+    useEffect(() => {
+        if (!formSubmitLoading && formSubmitData) router.push('/');
+    }, [formSubmitLoading]);
     return (
         <Fragment>
             <Head>

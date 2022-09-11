@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { encryptPassword } from "../../lib/password";
+import { encryptPassword } from "../../lib/loginPassword";
 import User from '../../models/user';
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
