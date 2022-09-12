@@ -3,7 +3,7 @@ import type { NextPage } from 'next';
 import Head from "next/head";
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/router';
-import useApi from '../lib/useApi';
+import useApi, { IStateData } from '../lib/useApi';
 import { Main } from '../components/styles/StyleComponents';
 import { Form, FormInputContainer, FormSubmitButton } from '../components/styles/FormStyleComponents';
 import styled from 'styled-components';
@@ -16,17 +16,27 @@ const LoginMain = styled(Main)`
 
     background-color: #D3411F;
 `;
+const ErrorMessageText = styled.span`
+    font-size: 12px;
+`;
 interface IForm {
     email: string,
     password: string,
 }
+interface IResponseData extends IStateData {
+    message?: string
+}
 const Login: NextPage = () => {
     const router = useRouter();
-    const [loginRequest, { loading: loginLoading, data: loginData }] = useApi('/api/login');
+    const [loginRequest, { loading: loginLoading, data: loginData }] = useApi<IResponseData>('/api/login');
     const { register, handleSubmit, formState: { isValid } } = useForm<IForm>({ mode: 'onChange' });
     const onSubmit = (data: IForm) => loginRequest(data);
     useEffect(() => {
-        if (!loginLoading && loginData) router.push('/');
+        if (!loginData) return;
+        if (loginData.ok) {
+            const timer = setTimeout(() => router.push('/'), 3000);
+            return () => clearTimeout(timer);
+        }
     }, [loginLoading]);
     return (
         <Fragment>
@@ -42,6 +52,7 @@ const Login: NextPage = () => {
                     <FormInputContainer>
                         <input {...register("password", { required: "Enter your password" })} type="password" placeholder="password" />
                     </FormInputContainer>
+                    {loginData?.message && <ErrorMessageText>{loginData?.message}</ErrorMessageText>}
                     <FormSubmitButton disabled={!isValid}>Sign In</FormSubmitButton>
                 </Form>
             </LoginMain>

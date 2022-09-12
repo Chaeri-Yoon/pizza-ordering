@@ -1,8 +1,9 @@
 import mongoose from "mongoose";
 import { NextApiRequest, NextApiResponse } from "next";
+import apiHandler, { IApiResponse } from "../../lib/apiHandler";
 
 const MONGODB_URL = process.env.MONGODB_URL || '';
-export default async function (req: NextApiRequest, res: NextApiResponse) {
+async function handler(req: NextApiRequest, res: NextApiResponse<IApiResponse>) {
     try {
         if ((mongoose.connection?.readyState !== 1) && (mongoose.connection?.readyState !== 2)) {
             mongoose.connect(MONGODB_URL);
@@ -13,9 +14,11 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
             db.once("open", handleOpen);
             db.on("error", handleError);
         }
-        res.status(200).json({ message: "DB success!" });
+        return res.status(200).json({ ok: true });
     }
-    catch (e) {
-        res.status(500).json({ error: e });
+    catch (error) {
+        console.log(error);
+        return res.status(500).json({ ok: false, error: error?.toString() || "❌Something went wrong!" });
     }
 }
+export default apiHandler(handler);

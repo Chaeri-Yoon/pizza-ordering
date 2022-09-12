@@ -1,8 +1,13 @@
 import { NextApiRequest, NextApiResponse } from "next";
+import apiHandler, { IApiResponse } from "../../lib/apiHandler";
 import { decryptPassword } from "../../lib/loginPassword";
+
 import User from '../../models/user';
 
-async function handler(req: NextApiRequest, res: NextApiResponse) {
+interface IResponseData extends IApiResponse {
+    message?: string
+}
+async function handler(req: NextApiRequest, res: NextApiResponse<IResponseData>) {
     const { body: { email, password } } = req;
     try {
         const foundUser = await User.findOne({
@@ -10,13 +15,13 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
                 email
             }
         });
-        if (!foundUser) return res.status(404).json({ message: "User does not exist." });
-        if (!decryptPassword(foundUser, password)) return res.status(401).json({ message: "Invalid password" });
+        if (!foundUser) return res.status(404).json({ ok: false, message: "❌Wrong email or password" });
+        if (!decryptPassword(foundUser, password)) return res.status(401).json({ ok: false, message: "❌Wrong email or password" });
 
-        res.status(200).json({ message: "Login success!" });
+        return res.status(200).json({ ok: true, message: "✅Successfully logged in" });
     }
-    catch (e) {
-        res.status(500).json({ error: e });
+    catch (error) {
+        return res.status(500).json({ ok: false, error: error?.toString() || "Something went wrong!" });
     }
 }
-export default handler;
+export default apiHandler(handler);

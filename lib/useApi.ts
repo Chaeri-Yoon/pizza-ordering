@@ -2,21 +2,26 @@ import { useState } from "react"
 
 interface IState<T> {
     loading: boolean,
-    data?: T,
-    error?: object
+    data: T,
+    error?: string
 }
-type IResult<T = any> = [(data: T) => void, IState<T>]
-export default <T = any>(url: string): IResult => {
+export interface IStateData {
+    ok: boolean
+}
+type IResult<T> = [(receivedData?: any) => void, IState<T>]
+export default <T extends IStateData>(url: string): IResult<T> => {
     const [state, setState] = useState<IState<T>>({
         loading: false,
-        data: undefined,
+        data: {
+            ok: false
+        } as T,
         error: undefined
     });
-    const callApi = (data: T) => {
+    const callApi = (receivedData?: any) => {
         setState(prev => ({ ...prev, loading: true }));
         fetch(url, {
             method: 'POST',
-            body: JSON.stringify(data),
+            body: JSON.stringify(receivedData),
             headers: { 'Content-Type': 'application/json' }
         }).then(response => response.json())
             .then(data => setState(prev => ({ ...prev, data })))

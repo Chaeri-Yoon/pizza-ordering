@@ -38,7 +38,7 @@ const Join: NextPage = () => {
     const isMatchWithPassword = (value: string) => (value === passwordValue) || 'Password does not match.';
     const onSubmit = (data: IForm) => formSubmitRequest(data);
     useEffect(() => {
-        if (!formSubmitLoading && formSubmitData) router.push('/');
+        if (formSubmitData && formSubmitData.ok) router.push('/');
     }, [formSubmitLoading]);
     return (
         <Fragment>
