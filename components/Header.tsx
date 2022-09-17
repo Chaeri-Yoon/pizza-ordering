@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import styled from 'styled-components';
+import useLoginStatus from '../lib/useLoginStatus';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPizzaSlice } from '@fortawesome/free-solid-svg-icons';
 
@@ -57,7 +58,11 @@ const UserContainer = styled(NavContainer)`
         }
     }
 `;
+const UserName = styled.span`
+    font-weight: 400;
+`;
 export default () => {
+    const { loggedUser } = useLoginStatus();
     return (
         <Container>
             <Link href="/">
@@ -73,8 +78,16 @@ export default () => {
                 <Link href="/#contact">Contact</Link>
             </NavContainer>
             <UserContainer>
-                <Link href="/join">Join</Link>
-                <Link href="/login">Login</Link>
+                {(loggedUser === undefined) ? (
+                    <>
+                        <Link href="/join">Join</Link>
+                        <Link href="/login">Login</Link>
+                    </>
+                ) : (
+                    <>
+                        <UserName>Hello, {loggedUser.nickname}</UserName>
+                    </>
+                )}
             </UserContainer>
         </Container>
     )

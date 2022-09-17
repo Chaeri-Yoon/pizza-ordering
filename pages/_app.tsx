@@ -1,8 +1,9 @@
-import { Fragment, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import type { AppProps } from 'next/app';
+import { SWRConfig } from 'swr';
 import Header from '../components/Header';
-import '../styles/globals.css';
 import useApi from '../lib/useApi';
+import '../styles/globals.css';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [dbConnect] = useApi('/api/db');
@@ -10,10 +11,10 @@ function MyApp({ Component, pageProps }: AppProps) {
     dbConnect();
   }, []);
   return (
-    <Fragment>
+    <SWRConfig value={{ fetcher: (url: string) => fetch(url).then(response => response.json()) }}>
       <Header />
       <Component {...pageProps} />
-    </Fragment>
+    </SWRConfig>
   )
 }
 

@@ -1,9 +1,11 @@
 import { Fragment, useEffect } from 'react';
 import type { NextPage } from 'next';
 import Head from "next/head";
+import { useSWRConfig } from 'swr';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/router';
-import useApi, { IStateData } from '../lib/useApi';
+import useApi from '../lib/useApi';
+import { ILoginResponseData } from './api/login';
 import { Main } from '../components/styles/StyleComponents';
 import { Form, FormInputContainer, FormSubmitButton } from '../components/styles/FormStyleComponents';
 import styled from 'styled-components';
@@ -23,18 +25,19 @@ interface IForm {
     email: string,
     password: string,
 }
-interface IResponseData extends IStateData {
-    message?: string
-}
 const Login: NextPage = () => {
     const router = useRouter();
-    const [loginRequest, { loading: loginLoading, data: loginData }] = useApi<IResponseData>('/api/login');
+    const { mutate } = useSWRConfig();
+    const [loginRequest, { loading: loginLoading, data: loginData }] = useApi<ILoginResponseData>('/api/login');
     const { register, handleSubmit, formState: { isValid } } = useForm<IForm>({ mode: 'onChange' });
     const onSubmit = (data: IForm) => loginRequest(data);
     useEffect(() => {
         if (!loginData) return;
         if (loginData.ok) {
-            const timer = setTimeout(() => router.push('/'), 3000);
+            const timer = setTimeout(() => {
+                mutate('/api/login', (prev: ILoginResponseData) => ({ ...prev, loggedUser: loginData.loggedUser }));
+                router.push('/');
+            }, 2000);
             return () => clearTimeout(timer);
         }
     }, [loginLoading]);
