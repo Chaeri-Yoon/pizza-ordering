@@ -2,9 +2,10 @@ import { Fragment, useEffect } from 'react';
 import type { NextPage } from 'next';
 import Head from "next/head";
 import { useForm } from 'react-hook-form';
-import { useRouter } from 'next/router';
 import { ErrorMessage } from '@hookform/error-message';
-import useApi from '../lib/useApi';
+import { IJoinResponse } from './api/join';
+import useMutationApi from '../lib/useMutationApi';
+import useLoginRequest from '../lib/useLoginRequest';
 import { Main } from '../components/styles/StyleComponents';
 import { Form, FormInputContainer, FormErrorMessageText, FormSubmitButton } from '../components/styles/FormStyleComponents';
 import styled from 'styled-components';
@@ -17,16 +18,16 @@ const JoinMain = styled(Main)`
 
     background-color: #D3411F;
 `;
-interface IForm {
+interface IJoinForm {
     email: string,
     nickname: string,
     password: string,
     password_confirm: string
 }
 const Join: NextPage = () => {
-    const router = useRouter();
-    const [formSubmitRequest, { loading: formSubmitLoading, data: formSubmitData }] = useApi('/api/join');
-    const { register, handleSubmit, watch, formState: { errors, isValid }, setError, clearErrors } = useForm<IForm>({ mode: 'onChange' });
+    const [joinRequest, { loading: joinLoading, data: joinData }] = useMutationApi<IJoinResponse, IJoinForm>('/api/join');
+    const { loginRequest } = useLoginRequest();
+    const { register, handleSubmit, watch, formState: { errors, isValid }, getValues, setError, clearErrors } = useForm<IJoinForm>({ mode: 'onChange' });
     const passwordValue = watch('password');
     const passwordConfirmValue = watch('password_confirm');
     const isMatchWithConfirm = (value: string) => {
@@ -36,10 +37,13 @@ const Join: NextPage = () => {
         return isMatch;
     }
     const isMatchWithPassword = (value: string) => (value === passwordValue) || 'Password does not match.';
-    const onSubmit = (data: IForm) => formSubmitRequest(data);
+    const onSubmit = (data: IJoinForm) => joinRequest(data);
     useEffect(() => {
-        if (formSubmitData && formSubmitData.ok) router.push('/');
-    }, [formSubmitLoading]);
+        if (joinData && joinData.ok) {
+            const [email, password] = getValues(["email", "password"]);
+            loginRequest({ email, password });
+        }
+    }, [joinLoading]);
     return (
         <Fragment>
             <Head>
@@ -48,7 +52,7 @@ const Join: NextPage = () => {
             </Head>
             <JoinMain>
                 <Form onSubmit={handleSubmit(onSubmit)}>
-                    <>
+                    <Fragment>
                         <FormInputContainer>
                             <input {...register("email", {
                                 required: true,
@@ -83,7 +87,7 @@ const Join: NextPage = () => {
                             {errors?.password_confirm && <ErrorMessage errors={errors} name="password_confirm" as={<FormErrorMessageText />} />}
                         </FormInputContainer>
                         <FormSubmitButton disabled={!isValid}>Sign Up</FormSubmitButton>
-                    </>
+                    </Fragment>
                 </Form>
             </JoinMain>
         </Fragment>

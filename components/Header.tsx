@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import Link from 'next/link';
 import styled from 'styled-components';
 import useLoginStatus from '../lib/useLoginStatus';
@@ -79,14 +80,14 @@ export default () => {
             </NavContainer>
             <UserContainer>
                 {(loggedUser === undefined) ? (
-                    <>
+                    <Fragment>
                         <Link href="/join">Join</Link>
                         <Link href="/login">Login</Link>
-                    </>
+                    </Fragment>
                 ) : (
-                    <>
+                    <Fragment>
                         <UserName>Hello, {loggedUser.nickname}</UserName>
-                    </>
+                    </Fragment>
                 )}
             </UserContainer>
         </Container>
