@@ -2,6 +2,9 @@ import { Fragment } from 'react';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import styled from 'styled-components';
+import MenuList from '../components/MenuList';
+import Menu, { IMenu } from '../models/menu';
+import mongoose from 'mongoose';
 
 const Main = styled.main`
   position: absolute;
@@ -24,7 +27,7 @@ const Section = styled.section`
   }
 `;
 
-const Home: NextPage = () => {
+const Home: NextPage<{ menuList: IMenu[] }> = ({ menuList }) => {
   return (
     <Fragment>
       <Head>
@@ -34,12 +37,25 @@ const Home: NextPage = () => {
       <Main>
         <Container>
           <Section id="home">Home</Section>
-          <Section id="menu">Menu</Section>
+          <Section id="menu"><MenuList menuList={menuList} /></Section>
           <Section id="contact">Contact</Section>
         </Container>
       </Main>
     </Fragment>
   )
 };
-
+export async function getStaticProps() {
+  await mongoose.connect(process.env.MONGODB_URL || '');
+  const data = await Menu.find({});
+  const menuList = data.map(menu => {
+    let objectMenu = menu.toObject();
+    objectMenu._id = objectMenu._id.toString();
+    return objectMenu;
+  });
+  return {
+    props: {
+      menuList
+    }
+  }
+}
 export default Home;

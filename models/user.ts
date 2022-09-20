@@ -7,22 +7,10 @@ export interface IUser {
     salt: string
 }
 const schema = new mongoose.Schema<IUser>({
-    email: {
-        type: String,
-        required: true
-    },
-    nickname: {
-        type: String,
-        required: true
-    },
-    hash: {
-        type: String,
-        required: true
-    },
-    salt: {
-        type: String,
-        required: true
-    }
+    email: String,
+    nickname: String,
+    hash: String,
+    salt: String
 });
 const model = mongoose.models.User || mongoose.model<IUser>('User', schema);
 export default model;
