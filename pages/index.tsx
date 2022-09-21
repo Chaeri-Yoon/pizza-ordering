@@ -26,8 +26,11 @@ const Section = styled.section`
     background-color: #D3411F;
   }
 `;
-
-const Home: NextPage<{ menuList: IMenu[] }> = ({ menuList }) => {
+export interface IBriefMenu {
+  _id: string,
+  image: string
+}
+const Home: NextPage<{ menuList: IBriefMenu[] }> = ({ menuList }) => {
   return (
     <Fragment>
       <Head>
@@ -46,7 +49,7 @@ const Home: NextPage<{ menuList: IMenu[] }> = ({ menuList }) => {
 };
 export async function getStaticProps() {
   await mongoose.connect(process.env.MONGODB_URL || '');
-  const data = await Menu.find({});
+  const data = await Menu.find({}).select("_id, image");
   const menuList = data.map(menu => {
     let objectMenu = menu.toObject();
     objectMenu._id = objectMenu._id.toString();

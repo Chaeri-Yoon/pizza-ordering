@@ -1,17 +1,18 @@
-import { IMenu } from '../models/menu';
+import MenuItem from './MenuItem';
+import styled from 'styled-components';
+import { IBriefMenu } from '../pages';
 
-export default ({ menuList }: { menuList: IMenu[] }) => {
-    console.log(menuList)
+const Container = styled.div`
+    padding: 0 10em;
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 3em;
+`;
+export default ({ menuList }: { menuList: IBriefMenu[] }) => {
     return (
-        <>
-            {menuList?.map(menu =>
-                <div>
-                    <span>{menu.name}</span>
-                    <span>{menu.image}</span>
-                    <span>{menu.price}</span>
-                    <span>{menu.description}</span>
-                </div>
-            )}
-        </>
+        <Container>
+            {menuList?.map(menu => <MenuItem key={menu._id} menu={menu} />)}
+        </Container>
     )
 }
