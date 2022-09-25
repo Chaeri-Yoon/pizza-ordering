@@ -2,21 +2,13 @@ import { Fragment } from 'react';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import styled from 'styled-components';
+import { Main, Container } from '../components/styles/PageStyleComponents';
 import MenuList from '../components/MenuList';
-import Menu, { IMenu } from '../models/menu';
-import mongoose from 'mongoose';
+import Menu from '../models/menu';
+import { Document } from 'mongoose';
+import serializeId from '../lib/serializeId';
+import dbConnect from '../lib/dbConnect';
 
-const Main = styled.main`
-  position: absolute;
-  top: 3em;
-  width: 100%;
-`;
-const Container = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
 const Section = styled.section`
   scroll-margin-top: 3em;
   padding: 2em;
@@ -48,13 +40,9 @@ const Home: NextPage<{ menuList: IBriefMenu[] }> = ({ menuList }) => {
   )
 };
 export async function getStaticProps() {
-  await mongoose.connect(process.env.MONGODB_URL || '');
-  const data = await Menu.find({}).select("_id, image");
-  const menuList = data.map(menu => {
-    let objectMenu = menu.toObject();
-    objectMenu._id = objectMenu._id.toString();
-    return objectMenu;
-  });
+  await dbConnect();
+  const data: Document[] = await Menu.find({}).select("_id, image");
+  const menuList = serializeId(data);
   return {
     props: {
       menuList

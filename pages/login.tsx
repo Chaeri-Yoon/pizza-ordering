@@ -4,7 +4,7 @@ import Head from "next/head";
 import { useForm } from 'react-hook-form';
 import { ILoginInput } from './api/login';
 import useLoginRequest from '../lib/useLoginRequest';
-import { Main } from '../components/styles/StyleComponents';
+import { Main } from '../components/styles/PageStyleComponents';
 import { Form, FormInputContainer, FormSubmitButton } from '../components/styles/FormStyleComponents';
 import styled from 'styled-components';
 

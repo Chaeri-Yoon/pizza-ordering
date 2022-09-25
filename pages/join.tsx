@@ -6,7 +6,7 @@ import { ErrorMessage } from '@hookform/error-message';
 import { IJoinResponse } from './api/join';
 import useMutationApi from '../lib/useMutationApi';
 import useLoginRequest from '../lib/useLoginRequest';
-import { Main } from '../components/styles/StyleComponents';
+import { Main } from '../components/styles/PageStyleComponents';
 import { Form, FormInputContainer, FormErrorMessageText, FormSubmitButton } from '../components/styles/FormStyleComponents';
 import styled from 'styled-components';
 

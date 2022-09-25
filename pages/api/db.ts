@@ -1,19 +1,10 @@
-import mongoose from "mongoose";
 import { NextApiRequest, NextApiResponse } from "next";
 import apiHandler, { IApiResponse } from "../../lib/apiHandler";
+import dbConnect from "../../lib/dbConnect";
 
-const MONGODB_URL = process.env.MONGODB_URL || '';
 async function handler(req: NextApiRequest, res: NextApiResponse<IApiResponse>) {
     try {
-        if ((mongoose.connection?.readyState !== 1) && (mongoose.connection?.readyState !== 2)) {
-            mongoose.connect(MONGODB_URL);
-            const db = mongoose.connection;
-            const handleOpen = () => console.log("✔ Connected to DB");
-            const handleError = () => console.log("❌ Error on DB Connection");
-
-            db.once("open", handleOpen);
-            db.on("error", handleError);
-        }
+        await dbConnect();
         return res.status(200).json({ ok: true });
     }
     catch (error) {

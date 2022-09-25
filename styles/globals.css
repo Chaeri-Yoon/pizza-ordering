@@ -28,6 +28,7 @@ a {
 
 button {
   border: transparent;
+  background-color: transparent;
 }
 
 button:hover {

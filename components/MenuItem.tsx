@@ -17,6 +17,6 @@ const Container = styled.div<{ backgroundUrl: string }>`
 `;
 export default ({ menu }: { menu: IBriefMenu }) => {
     return (
-        <Link href={`/${menu._id}`}><Container key={menu._id} backgroundUrl={menu.image || ''} /></Link>
+        <Link href={`/menu/${menu._id}`}><Container key={menu._id} backgroundUrl={menu.image || ''} /></Link>
     )
 }

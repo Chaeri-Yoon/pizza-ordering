@@ -1,7 +1,6 @@
-import mongoose from "mongoose";
+import mongoose, { Document } from "mongoose";
 
-export interface IMenu {
-    _id: string,
+export interface IMenu extends Document {
     name: string,
     image: string,
     price: number,
