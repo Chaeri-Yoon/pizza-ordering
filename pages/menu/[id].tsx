@@ -24,7 +24,6 @@ const MenuContainer = styled(Container)`
     & > div{
         width: 30%;
         aspect-ratio: 3 / 4;
-        border: 1px solid black;
     }
 `;
 const MenuImageContainer = styled.div<{ backgroundUrl: string }>`
@@ -39,6 +38,7 @@ const MenuOrderContainer = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    gap: 2em;
 `;
 const MenuInfoContainer = styled.div`
     width: 100%;
@@ -46,7 +46,7 @@ const MenuInfoContainer = styled.div`
     flex-direction: column;
     justify-content: start;
     & > span:first-child{
-        margin-bottom: 1em;
+        margin-bottom: 0.5em;
         font-size: 1.5em;
     }
     & > span:last-child{
@@ -60,7 +60,6 @@ const MenuSelectContainer = styled.div`
     flex-direction: column;
     justify-content: flex-start;
     gap: 1em;
-    border: 1px solid black;
     & > div{
         width: 100%;
         display: flex;
