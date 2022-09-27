@@ -39,7 +39,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<ILoginResponse>
         }
     }
     else if (req.method === 'GET') {
-        if (!req.session.user) return res.status(200).json({ ok: false, message: 'No logged user' });
+        if (!req.session.user) return res.status(200).json({ ok: true, message: 'No logged user' });
         else {
             try {
                 const loggedUser = await User.findById(req.session.user.id);

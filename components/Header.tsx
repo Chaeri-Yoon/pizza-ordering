@@ -63,7 +63,7 @@ const UserName = styled.span`
     font-weight: 400;
 `;
 export default () => {
-    const { loggedUser } = useLoginStatus();
+    const data = useLoginStatus();
     return (
         <Container>
             <Link href="/">
@@ -79,14 +79,14 @@ export default () => {
                 <Link href="/#contact">Contact</Link>
             </NavContainer>
             <UserContainer>
-                {(loggedUser === undefined) ? (
+                {(data?.loggedUser === undefined) ? (
                     <Fragment>
                         <Link href="/join">Join</Link>
                         <Link href="/login">Login</Link>
                     </Fragment>
                 ) : (
                     <Fragment>
-                        <UserName>Hello, {loggedUser.nickname}</UserName>
+                        <UserName>Hello, {data.loggedUser.nickname}</UserName>
                     </Fragment>
                 )}
             </UserContainer>

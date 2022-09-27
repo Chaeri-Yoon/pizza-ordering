@@ -7,5 +7,6 @@ interface ILoggedUserResponse extends IApiResponse {
 }
 export default () => {
     const { data } = useSWR<ILoggedUserResponse>('/api/login');
-    return { loggedUser: data && data.ok && data.loggedUser || undefined };
+    // return { loggedUser: (data && data.ok && data.loggedUser) || undefined };
+    return data;
 }
