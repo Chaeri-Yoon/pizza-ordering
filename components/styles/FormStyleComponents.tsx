@@ -38,4 +38,8 @@ export const FormErrorMessageText = styled.span`
 export const FormSubmitButton = styled.button`
     border-radius: 0.2em;
     padding: 0.5em 1em;
+    &:disabled{
+        background-color: rgba(239, 239, 239, 0.3);
+    }
+    background-color: #efeded;
 `;
