@@ -36,8 +36,6 @@ export const FormErrorMessageText = styled.span`
     font-size: 10px;
 `;
 export const FormSubmitButton = styled.button`
-    border-radius: 0.2em;
-    padding: 0.5em 1em;
     &:disabled{
         background-color: rgba(239, 239, 239, 0.3);
     }

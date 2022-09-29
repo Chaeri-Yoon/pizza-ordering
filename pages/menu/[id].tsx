@@ -10,6 +10,7 @@ import styled from "styled-components";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBacon, faCheese, faPepperHot, faPizzaSlice } from '@fortawesome/free-solid-svg-icons';
 import dbConnect from "../../lib/dbConnect";
+import useMutationApi, { IStateData } from "../../lib/useMutationApi";
 
 const Title = styled.span`
     color: #aaa9a9;
@@ -39,9 +40,11 @@ const MenuOrderContainer = styled.div`
     flex-direction: column;
     justify-content: space-between;
     gap: 2em;
+    & > div{
+        width: 100%;
+    }
 `;
 const MenuInfoContainer = styled.div`
-    width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: start;
@@ -85,9 +88,9 @@ const SelectionIcon = styled.div`
 `;
 const SelectionIconImage = styled.button<{ iconSize: TSize }>`
     width: ${(props) => {
-        if (props.iconSize === ESizeOptions.S) return '40%';
-        else if (props.iconSize === ESizeOptions.M) return '50%';
-        else return '60%';
+        if (props.iconSize === ESizeOptions.S) return '50%';
+        else if (props.iconSize === ESizeOptions.M) return '60%';
+        else return '70%';
     }};
     aspect-ratio: 1 / 1;
 `;
@@ -97,7 +100,6 @@ const ExtraCharge = styled.div`
 `;
 const TotalContainer = styled.div`
     padding: 0 1em;
-    width: 100%;
     display: flex;
     justify-content: flex-end;
     align-items: center;
@@ -105,6 +107,17 @@ const TotalContainer = styled.div`
     & > span:last-child{
         margin-left: 0.5em;
         font-size: 1.5em;
+    }
+`;
+const AddToCartButtonContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    & > button{
+        width: 100%;
+        border: 1px solid #aaa9a9;
+        background-color: #aaa9a9;
+        color: white;
     }
 `;
 // interface, type
@@ -118,7 +131,14 @@ enum ETopping { 'cheese' = 'cheese', 'bacon' = 'bacon', 'pepper' = 'pepper' };
 type TSize = keyof typeof ESizeOptions;
 type TTopping = keyof typeof ETopping;
 
+interface IAddToCartForm {
+    menu: string,
+    size: TSize,
+    toppings: TTopping[]
+}
+
 const MenuDetailPage: NextPage<{ menu: IMenu, toppings: ITopping[] }> = ({ menu, toppings }) => {
+    const [addToCart] = useMutationApi<IStateData, IAddToCartForm>('/api/cart');
     const [selection, setSelection] = useState<ISelection>({
         size: ESizeOptions.S,
         toppings: [],
@@ -150,6 +170,14 @@ const MenuDetailPage: NextPage<{ menu: IMenu, toppings: ITopping[] }> = ({ menu,
             <ExtraCharge>+${toppings.find(topping => topping.name === name)?.price}</ExtraCharge>
         </SelectionIcon>
     )
+    const handleAddToCart = () => {
+        const data = {
+            menu: menu._id,
+            size: selection.size,
+            toppings: selection.toppings.map(topping => toppings.find(db => db.name === topping)?._id)
+        }
+        addToCart(data);
+    }
     return (
         <Fragment>
             <Head>
@@ -192,6 +220,7 @@ const MenuDetailPage: NextPage<{ menu: IMenu, toppings: ITopping[] }> = ({ menu,
                             <span>Total:</span>
                             <span>${totalPrice.toFixed(2)}</span>
                         </TotalContainer>
+                        <AddToCartButtonContainer><button onClick={handleAddToCart}>Add to cart</button></AddToCartButtonContainer>
                     </MenuOrderContainer>
                 </MenuContainer>
             </Main>

@@ -3,7 +3,7 @@ import Link from 'next/link';
 import styled from 'styled-components';
 import useLoginStatus from '../lib/useLoginStatus';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPizzaSlice } from '@fortawesome/free-solid-svg-icons';
+import { faCartShopping, faPizzaSlice } from '@fortawesome/free-solid-svg-icons';
 
 const Container = styled.div`
     position: fixed;
@@ -47,7 +47,7 @@ const NavContainer = styled.nav`
     & > *{
         padding: 0 10%;
         &:not(:last-child){
-            border-right: 2px solid white;
+            border-right: 1.5px solid white;
         }
     }
 `;
@@ -55,7 +55,7 @@ const UserContainer = styled(NavContainer)`
     & > *{
         padding: 0 5%;
         &:not(:last-child){
-            border-right: 2px solid white;
+            border-right: 1.5px solid white;
         }
     }
 `;
@@ -87,6 +87,7 @@ export default () => {
                 ) : (
                     <Fragment>
                         <UserName>Hello, {data.loggedUser.nickname}</UserName>
+                        <Link href="/cart"><a><FontAwesomeIcon icon={faCartShopping} /></a></Link>
                     </Fragment>
                 )}
             </UserContainer>
