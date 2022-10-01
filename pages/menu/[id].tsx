@@ -3,14 +3,14 @@ import React, { Fragment, useState } from "react";
 import { Document } from "mongoose";
 import { GetStaticProps, NextPage } from "next";
 import serializeId from "../../lib/serializeId";
+import dbConnect from "../../lib/dbConnect";
+import useMutationApi, { IStateData } from "../../lib/useMutationApi";
 import Menu, { IMenu } from '../../models/menu';
 import Topping, { ITopping } from '../../models/topping';
 import { Main, Container } from '../../components/styles/PageStyleComponents';
 import styled from "styled-components";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBacon, faCheese, faPepperHot, faPizzaSlice } from '@fortawesome/free-solid-svg-icons';
-import dbConnect from "../../lib/dbConnect";
-import useMutationApi, { IStateData } from "../../lib/useMutationApi";
 
 const Title = styled.span`
     color: #aaa9a9;
@@ -138,7 +138,7 @@ interface IAddToCartForm {
 }
 
 const MenuDetailPage: NextPage<{ menu: IMenu, toppings: ITopping[] }> = ({ menu, toppings }) => {
-    const [addToCart] = useMutationApi<IStateData, IAddToCartForm>('/api/cart');
+    const [addToCart, { loading: addToCartLoading }] = useMutationApi<IStateData, IAddToCartForm>('/api/cart');
     const [selection, setSelection] = useState<ISelection>({
         size: ESizeOptions.S,
         toppings: [],
@@ -220,7 +220,7 @@ const MenuDetailPage: NextPage<{ menu: IMenu, toppings: ITopping[] }> = ({ menu,
                             <span>Total:</span>
                             <span>${totalPrice.toFixed(2)}</span>
                         </TotalContainer>
-                        <AddToCartButtonContainer><button onClick={handleAddToCart}>Add to cart</button></AddToCartButtonContainer>
+                        <AddToCartButtonContainer><button onClick={handleAddToCart}>{addToCartLoading ? "Loading..." : "Add To Cart"}</button></AddToCartButtonContainer>
                     </MenuOrderContainer>
                 </MenuContainer>
             </Main>
