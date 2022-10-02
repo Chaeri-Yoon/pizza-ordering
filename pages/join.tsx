@@ -43,7 +43,7 @@ const Join: NextPage = () => {
             const [email, password] = getValues(["email", "password"]);
             loginRequest({ email, password });
         }
-    }, [joinLoading]);
+    }, [joinData]);
     return (
         <Fragment>
             <Head>
@@ -86,7 +86,7 @@ const Join: NextPage = () => {
                             <input {...register("password_confirm", { required: true, validate: isMatchWithPassword })} type="password" placeholder="password confirm" />
                             {errors?.password_confirm && <ErrorMessage errors={errors} name="password_confirm" as={<FormErrorMessageText />} />}
                         </FormInputContainer>
-                        <FormSubmitButton disabled={!isValid}>Sign Up</FormSubmitButton>
+                        <FormSubmitButton disabled={!isValid}>{joinLoading ? "Loading..." : "Sign Up"}</FormSubmitButton>
                     </Fragment>
                 </Form>
             </JoinMain>
