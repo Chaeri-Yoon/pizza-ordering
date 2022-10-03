@@ -33,7 +33,7 @@ const Container = styled.div`
         }
     }
 `;
-const Logo = styled.div`
+const ButtonIconContainer = styled.div`
     & > *{
         width: 1.5em;
         aspect-ratio: 1 / 1;
@@ -62,15 +62,18 @@ const UserContainer = styled(NavContainer)`
 const UserName = styled.span`
     font-weight: 400;
 `;
+const CartButtonContainer = styled(ButtonIconContainer)`
+    & > *{
+        width: 1em;
+    }
+`;
 export default () => {
     const data = useLoginStatus();
     return (
         <Container>
             <Link href="/">
                 <a>
-                    <Logo>
-                        <FontAwesomeIcon icon={faPizzaSlice} />
-                    </Logo>
+                    <ButtonIconContainer><FontAwesomeIcon icon={faPizzaSlice} /></ButtonIconContainer>
                 </a>
             </Link>
             <NavContainer>
@@ -87,7 +90,9 @@ export default () => {
                 ) : (
                     <Fragment>
                         <UserName>Hello, {data.loggedUser.nickname}</UserName>
-                        <Link href="/cart"><a><FontAwesomeIcon icon={faCartShopping} /></a></Link>
+                        <Link href="/cart">
+                            <a><CartButtonContainer><FontAwesomeIcon icon={faCartShopping} /></CartButtonContainer></a>
+                        </Link>
                     </Fragment>
                 )}
             </UserContainer>

@@ -28,7 +28,7 @@ const MenuContainer = styled(Container)`
     }
 `;
 const MenuImageContainer = styled.div<{ backgroundUrl: string }>`
-    background-color: black;
+    background-color: #252525;
     background-image: url(${(props) => props.backgroundUrl});
     background-position: center;
     background-repeat: no-repeat;
@@ -157,7 +157,7 @@ const MenuDetailPage: NextPage<{ menu: IMenu, toppings: ITopping[] }> = ({ menu,
     const SizeOption = ({ size }: { size: TSize }) => (
         <SelectionIcon>
             <SelectionIconImage iconSize={size} onClick={() => handleSizeClick(size)}>
-                <FontAwesomeIcon icon={faPizzaSlice} color={selection.size === size ? 'yellow' : 'black'} />
+                <FontAwesomeIcon icon={faPizzaSlice} color={selection.size === size ? 'yellow' : '#252525'} />
             </SelectionIconImage>
             {size !== 'S' && <ExtraCharge>+${size == ESizeOptions.M ? 2 : 4}</ExtraCharge>}
         </SelectionIcon>
@@ -205,13 +205,13 @@ const MenuDetailPage: NextPage<{ menu: IMenu, toppings: ITopping[] }> = ({ menu,
                                 <Title>Choose toppings</Title>
                                 <SelectionCategory>
                                     <ToppingOption name={ETopping.cheese}>
-                                        <FontAwesomeIcon icon={faCheese} color={selection.toppings.includes(ETopping.cheese) ? 'yellow' : 'black'} />
+                                        <FontAwesomeIcon icon={faCheese} color={selection.toppings.includes(ETopping.cheese) ? 'yellow' : '#252525'} />
                                     </ToppingOption>
                                     <ToppingOption name={ETopping.bacon}>
-                                        <FontAwesomeIcon icon={faBacon} color={selection.toppings.includes(ETopping.bacon) ? 'yellow' : 'black'} />
+                                        <FontAwesomeIcon icon={faBacon} color={selection.toppings.includes(ETopping.bacon) ? 'yellow' : '#252525'} />
                                     </ToppingOption>
                                     <ToppingOption name={ETopping.pepper}>
-                                        <FontAwesomeIcon icon={faPepperHot} color={selection.toppings.includes(ETopping.pepper) ? 'yellow' : 'black'} />
+                                        <FontAwesomeIcon icon={faPepperHot} color={selection.toppings.includes(ETopping.pepper) ? 'yellow' : '#252525'} />
                                     </ToppingOption>
                                 </SelectionCategory>
                             </div>
