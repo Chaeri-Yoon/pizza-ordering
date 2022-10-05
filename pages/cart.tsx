@@ -1,11 +1,14 @@
 import { NextPage } from "next";
-import { Fragment, useEffect } from "react";
+import { Fragment, useEffect, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import useLoginStatus from "../lib/useLoginStatus";
 import { Main, Container } from "../components/styles/PageStyleComponents";
 import CartItem from "../components/CartItem";
 import styled from "styled-components";
+import useSWR from "swr";
+import { ICartResponse } from "./api/cart";
+import { ESizeOptions } from "../models/cart";
 
 const PageContainer = styled(Container)`
     height: calc(100vh - 3em);
@@ -65,9 +68,21 @@ const PriceContainer = styled.div`
 const Cart: NextPage = () => {
     const router = useRouter();
     const data = useLoginStatus();
+    const { data: cartData } = useSWR<ICartResponse>('/api/cart');
+    const [totalPrice, setTotalPrice] = useState(0.0);
+    const [cartList, setCartList] = useState<JSX.Element[]>();
     useEffect(() => {
         if (data && data.ok) data.loggedUser === undefined && router.push('/');
     }, [data, router]);
+    useEffect(() => {
+        setTotalPrice(0.0);
+        cartData?.cartList && setCartList(cartData.cartList?.map(cartItem => {
+            // The data on additional price according to the size will be migrated to DB
+            const price = cartItem.quantity * (cartItem.menu.price + (cartItem.size === ESizeOptions.M ? 2 : (cartItem.size === ESizeOptions.L ? 4 : 0)) + cartItem.toppings?.reduce((acc, cur) => acc + cur.price, 0))
+            setTotalPrice(prev => prev + price);
+            return <CartItem key={cartItem._id} data={cartItem} price={price} />
+        }))
+    }, [cartData])
     return (
         <Fragment>
             <Head>
@@ -84,13 +99,11 @@ const Cart: NextPage = () => {
                             <span>Price</span>
                         </CartInfoTitleContainer>
                         <CartList>
-                            <CartItem />
-                            <CartItem />
-                            <CartItem />
+                            {cartList?.map(cart => cart)}
                         </CartList>
                     </CartContainer>
                     <PriceContainer>
-                        <span>$10.00</span>
+                        <span>${totalPrice.toFixed(2)}</span>
                     </PriceContainer>
                 </PageContainer>
             </Main>

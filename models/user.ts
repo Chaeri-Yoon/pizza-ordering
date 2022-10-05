@@ -17,5 +17,5 @@ const schema = new Schema<IUser>({
         ref: 'Cart'
     }]
 });
-const model = mongoose.models.User || mongoose.model<IUser>('User', schema);
+const model = mongoose.models?.User || mongoose.model<IUser>('User', schema);
 export default model;

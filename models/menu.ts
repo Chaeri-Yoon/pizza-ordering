@@ -4,18 +4,13 @@ export interface IMenu extends Document {
     name: string,
     image: string,
     price: number,
-    description: string,
-    carts: Schema.Types.ObjectId[]
+    description: string
 }
 const schema = new Schema<IMenu>({
     name: String,
     image: String,
     price: Number,
-    description: String,
-    carts: [{
-        type: [Schema.Types.ObjectId],
-        ref: 'Cart'
-    }]
+    description: String
 });
-const model = mongoose.models.Menu || mongoose.model<IMenu>('Menu', schema);
+const model = mongoose.models?.Menu || mongoose.model<IMenu>('Menu', schema);
 export default model;

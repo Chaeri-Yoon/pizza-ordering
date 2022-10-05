@@ -1,17 +1,14 @@
-import mongoose, { Document, Schema } from "mongoose";
+import mongoose, { Document } from "mongoose";
 
 export interface ITopping extends Document {
     name: string,
     price: number,
-    carts: Schema.Types.ObjectId[]
+    icon: string
 }
 const schema = new mongoose.Schema<ITopping>({
     name: String,
     price: Number,
-    carts: [{
-        type: [Schema.Types.ObjectId],
-        ref: 'Cart'
-    }]
+    icon: String
 });
 const model = mongoose.models.Topping || mongoose.model<ITopping>('Topping', schema);
 export default model;

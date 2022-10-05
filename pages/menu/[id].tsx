@@ -10,7 +10,11 @@ import Topping, { ITopping } from '../../models/topping';
 import { Main, Container } from '../../components/styles/PageStyleComponents';
 import styled from "styled-components";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBacon, faCheese, faPepperHot, faPizzaSlice } from '@fortawesome/free-solid-svg-icons';
+import { IconDefinition, IconName, library } from "@fortawesome/fontawesome-svg-core";
+import { faPizzaSlice, fas } from '@fortawesome/free-solid-svg-icons';
+import { ESizeOptions, TSize } from "../../models/cart";
+
+library.add(fas);
 
 const Title = styled.span`
     color: #aaa9a9;
@@ -123,18 +127,14 @@ const AddToCartButtonContainer = styled.div`
 // interface, type
 interface ISelection {
     size: TSize,
-    toppings: TTopping[],
+    toppings: ITopping[],
     quantity: number
 }
-enum ESizeOptions { 'S' = 'S', 'M' = 'M', 'L' = 'L' }
-enum ETopping { 'cheese' = 'cheese', 'bacon' = 'bacon', 'pepper' = 'pepper' };
-type TSize = keyof typeof ESizeOptions;
-type TTopping = keyof typeof ETopping;
 
 interface IAddToCartForm {
     menu: string,
     size: TSize,
-    toppings: TTopping[]
+    toppings: ITopping[]
 }
 
 const MenuDetailPage: NextPage<{ menu: IMenu, toppings: ITopping[] }> = ({ menu, toppings }) => {
@@ -146,10 +146,10 @@ const MenuDetailPage: NextPage<{ menu: IMenu, toppings: ITopping[] }> = ({ menu,
     });
     const totalPrice = menu.price
         + (selection.size === ESizeOptions.S ? 0 : (selection.size === ESizeOptions.M ? 2 : 4))
-        + selection.toppings.reduce((acc, cur) => acc + (toppings.find(topping => topping.name === cur)?.price || 0), 0);
+        + selection.toppings.reduce((acc, cur) => acc + (toppings.find(topping => topping.name === cur.name)?.price || 0), 0);
 
     const handleSizeClick = (size: TSize) => setSelection(prev => ({ ...prev, size }));
-    const handleTopping = (topping: TTopping) => setSelection(prev => {
+    const handleTopping = (topping: ITopping) => setSelection(prev => {
         const isExist = prev.toppings.includes(topping);
         const newToppings = isExist ? [...prev.toppings.filter(ing => ing !== topping)] : [...prev.toppings, topping];
         return { ...prev, toppings: [...newToppings] }
@@ -162,19 +162,19 @@ const MenuDetailPage: NextPage<{ menu: IMenu, toppings: ITopping[] }> = ({ menu,
             {size !== 'S' && <ExtraCharge>+${size == ESizeOptions.M ? 2 : 4}</ExtraCharge>}
         </SelectionIcon>
     );
-    const ToppingOption = ({ children, name }: { children: React.ReactNode, name: TTopping }) => (
+    const ToppingOption = ({ children, topping }: { children: React.ReactNode, topping: ITopping }) => (
         <SelectionIcon>
-            <SelectionIconImage iconSize='S' onClick={() => handleTopping(name)}>
+            <SelectionIconImage iconSize='S' onClick={() => handleTopping(topping)}>
                 {children}
             </SelectionIconImage>
-            <ExtraCharge>+${toppings.find(topping => topping.name === name)?.price}</ExtraCharge>
+            <ExtraCharge>+${topping.price}</ExtraCharge>
         </SelectionIcon>
     )
     const handleAddToCart = () => {
         const data = {
             menu: menu._id,
             size: selection.size,
-            toppings: selection.toppings.map(topping => toppings.find(db => db.name === topping)?._id)
+            toppings: selection.toppings.map(topping => toppings.find(db => db.name === topping.name)?._id)
         }
         addToCart(data);
     }
@@ -204,15 +204,11 @@ const MenuDetailPage: NextPage<{ menu: IMenu, toppings: ITopping[] }> = ({ menu,
                             <div>
                                 <Title>Choose toppings</Title>
                                 <SelectionCategory>
-                                    <ToppingOption name={ETopping.cheese}>
-                                        <FontAwesomeIcon icon={faCheese} color={selection.toppings.includes(ETopping.cheese) ? 'yellow' : '#252525'} />
-                                    </ToppingOption>
-                                    <ToppingOption name={ETopping.bacon}>
-                                        <FontAwesomeIcon icon={faBacon} color={selection.toppings.includes(ETopping.bacon) ? 'yellow' : '#252525'} />
-                                    </ToppingOption>
-                                    <ToppingOption name={ETopping.pepper}>
-                                        <FontAwesomeIcon icon={faPepperHot} color={selection.toppings.includes(ETopping.pepper) ? 'yellow' : '#252525'} />
-                                    </ToppingOption>
+                                    {toppings?.map(topping => {
+                                        return (<ToppingOption key={topping._id} topping={topping}>
+                                            <FontAwesomeIcon icon={['fas', topping.icon as IconName]} color={selection.toppings.includes(topping) ? 'yellow' : '#252525'} />
+                                        </ToppingOption>)
+                                    })}
                                 </SelectionCategory>
                             </div>
                         </MenuSelectContainer>

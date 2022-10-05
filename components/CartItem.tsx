@@ -1,4 +1,11 @@
+import { ObjectId } from "mongoose";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
+import { ESizeOptions, ICart } from "../models/cart";
+import { IMenu } from "../models/menu";
+import { ITopping } from "../models/topping";
+import { IUser } from "../models/user";
+import { ICartItem } from "../pages/api/cart";
 const CartItem = styled.li`
     position: relative;
     width: 100%;
@@ -48,13 +55,12 @@ const DescriptionDetailContainer = styled.div`
 const PizzaSize = styled.span`
     font-size: 0.5em;
 `;
-const PizzaToppings = styled.ul`
+const PizzaToppings = styled.div`
     padding: 0;
     display: flex;
     font-size: 0.5em;
 `;
-const PizzaTopping = styled.li`
-    list-style-type: none;
+const CustomizingDetail = styled.span`
     font-weight: 400;
     color: #aaa9a9;
 `;
@@ -76,23 +82,23 @@ const QuantityButton = styled.button`
 const Price = styled.span`
     font-size: 1.5em;
 `;
-export default () => {
+export default ({ data, price }: { data: ICartItem, price: number }) => {
     return (
         <CartItem>
             <RemoveButton>❌</RemoveButton>
             <Columns>
                 <Column>
                     <div>
-                        <ImageContainer backgroundUrl="https://i.ibb.co/TWYH4qD/photo-1604917877934-07d8d248d396-removebg-preview-1.png" />
+                        <ImageContainer backgroundUrl={data.menu.image} />
                         <DescriptionDetailContainer>
-                            <span>페퍼로니 피자</span>
+                            <span>{data.menu.name}</span>
                             <div>
-                                <PizzaSize>Size: </PizzaSize>
-                                <PizzaToppings>Toppings:
-                                    <PizzaTopping>&nbsp;Topping</PizzaTopping>
-                                    <PizzaTopping>&nbsp;Topping</PizzaTopping>
-                                    <PizzaTopping>&nbsp;Topping</PizzaTopping>
-                                </PizzaToppings>
+                                <PizzaSize>Size: <CustomizingDetail>{data.size}</CustomizingDetail></PizzaSize>
+                                {data.toppings.length > 0 && (
+                                    <PizzaToppings>Toppings:
+                                        {data.toppings?.map(topping => <CustomizingDetail key={topping._id}>&nbsp;{topping.name}</CustomizingDetail>)}
+                                    </PizzaToppings>
+                                )}
                             </div>
                         </DescriptionDetailContainer>
                     </div>
@@ -100,11 +106,11 @@ export default () => {
                 <Column>
                     <Quantity>
                         <QuantityButton>-</QuantityButton>
-                        <span>1</span>
+                        <span>{data.quantity}</span>
                         <QuantityButton>+</QuantityButton>
                     </Quantity>
                 </Column>
-                <Column><div><Price>$2.99</Price></div></Column>
+                <Column><div><Price>${price.toFixed(2)}</Price></div></Column>
             </Columns>
         </CartItem>
     )

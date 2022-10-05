@@ -1,11 +1,22 @@
 import mongoose from "mongoose";
 import { NextApiRequest, NextApiResponse } from "next";
-import apiHandler from "../../lib/apiHandler";
+import apiHandler, { IApiResponse } from "../../lib/apiHandler";
 import withApiSessionHandler from "../../lib/withApiSessionHandler";
-import User from '../../models/user';
-import Cart from "../../models/cart";
+import User, { IUser } from '../../models/user';
+import Cart, { ICart } from "../../models/cart";
+import { IMenu } from "../../models/menu";
+import { ITopping } from "../../models/topping";
 
-async function handler(req: NextApiRequest, res: NextApiResponse) {
+export interface ICartResponse extends IApiResponse {
+    message?: string
+    cartList?: ICartItem[]
+}
+export interface ICartItem extends Omit<ICart, 'user' | 'menu' | 'toppings'> {
+    user: IUser,
+    menu: IMenu,
+    toppings: ITopping[]
+}
+async function handler(req: NextApiRequest, res: NextApiResponse<ICartResponse>) {
     if (!req.session.user) return res.status(200).json({ ok: true, message: 'No logged user' });
     if (req.method === 'POST') {
         const { body: data } = req;
@@ -21,6 +32,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
             else {
                 const cart = await Cart.create({
                     ...cartData,
+                    size: data.size,
                     quantity: 1
                 });
                 const user = await User.findById(userId);
@@ -28,6 +40,16 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
                 user.save();
             }
             return res.status(200).json({ ok: true });
+        }
+        catch (error) {
+            return res.status(500).json({ ok: false, error: error?.toString() || "❌Something went wrong!" });
+        }
+    }
+    else if (req.method === 'GET') {
+        const userId = req.session.user.id;
+        try {
+            const cartList: ICartItem[] = await Cart.find({ user: userId }).populate('menu').populate('toppings');
+            return res.status(200).json({ ok: true, cartList });
         }
         catch (error) {
             return res.status(500).json({ ok: false, error: error?.toString() || "❌Something went wrong!" });
