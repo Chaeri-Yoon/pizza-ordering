@@ -35,9 +35,3 @@ export const FormInputContainer = styled.p`
 export const FormErrorMessageText = styled.span`
     font-size: 10px;
 `;
-export const FormSubmitButton = styled.button`
-    &:disabled{
-        background-color: rgba(239, 239, 239, 0.3);
-    }
-    background-color: #efeded;
-`;

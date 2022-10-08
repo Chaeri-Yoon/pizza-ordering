@@ -7,7 +7,7 @@ import { IJoinResponse } from './api/join';
 import useMutationApi from '../lib/useMutationApi';
 import useLoginRequest from '../lib/useLoginRequest';
 import { Main } from '../components/styles/PageStyleComponents';
-import { Form, FormInputContainer, FormErrorMessageText, FormSubmitButton } from '../components/styles/FormStyleComponents';
+import { Form, FormInputContainer, FormErrorMessageText } from '../components/styles/FormStyleComponents';
 import styled from 'styled-components';
 
 const JoinMain = styled(Main)`
@@ -86,7 +86,7 @@ const Join: NextPage = () => {
                             <input {...register("password_confirm", { required: true, validate: isMatchWithPassword })} type="password" placeholder="password confirm" />
                             {errors?.password_confirm && <ErrorMessage errors={errors} name="password_confirm" as={<FormErrorMessageText />} />}
                         </FormInputContainer>
-                        <FormSubmitButton disabled={!isValid}>{joinLoading ? "Loading..." : "Sign Up"}</FormSubmitButton>
+                        <button disabled={!isValid}>{joinLoading ? "Loading..." : "Sign Up"}</button>
                     </Fragment>
                 </Form>
             </JoinMain>

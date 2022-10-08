@@ -8,7 +8,7 @@ interface IState<T> {
 export interface IStateData {
     ok: boolean
 }
-type IResult<T, S> = [(receivedData?: S) => void, IState<T>]
+type IResult<T, S> = [(receivedData?: S, method?: 'PATCH' | 'POST') => void, IState<T>]
 export default <T extends IStateData, S>(url: string): IResult<T, S> => {
     const [state, setState] = useState<IState<T>>({
         loading: false,
@@ -17,10 +17,10 @@ export default <T extends IStateData, S>(url: string): IResult<T, S> => {
         } as T,
         error: undefined
     });
-    const callApi = (receivedData?: S) => {
+    const callApi = (receivedData?: S, method = 'POST') => {
         setState(prev => ({ ...prev, loading: true }));
         fetch(url, {
-            method: 'POST',
+            method,
             body: JSON.stringify(receivedData),
             headers: { 'Content-Type': 'application/json' }
         }).then(response => response.json())

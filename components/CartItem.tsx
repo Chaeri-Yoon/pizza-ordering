@@ -1,11 +1,7 @@
-import { ObjectId } from "mongoose";
-import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { ESizeOptions, ICart } from "../models/cart";
-import { IMenu } from "../models/menu";
-import { ITopping } from "../models/topping";
-import { IUser } from "../models/user";
-import { ICartItem } from "../pages/api/cart";
+import { useSWRConfig } from "swr";
+import useMutationApi from "../lib/useMutationApi";
+import { ICartItem, ICartResponse } from "../pages/api/cart";
 const CartItem = styled.li`
     position: relative;
     width: 100%;
@@ -83,6 +79,17 @@ const Price = styled.span`
     font-size: 1.5em;
 `;
 export default ({ data, price }: { data: ICartItem, price: number }) => {
+    const { mutate } = useSWRConfig();
+    const [updateCart] = useMutationApi(`/api/cart/${data._id}`);
+    const handleQuantity = (operation: "minus" | "plus") => {
+        const quantity = data.quantity + ((operation === "minus" ? -1 : 1) * 1);
+        mutate('/api/cart', (prev: ICartResponse) => {
+            const cartList = prev.cartList as ICartItem[];
+            const index = cartList?.findIndex(cart => cart._id == data._id);
+            return { ...prev, cartList: [...cartList.slice(0, index), { ...cartList[index], quantity }, ...cartList.slice(index + 1)] };
+        }, false);
+        updateCart({ quantity }, 'PATCH');
+    }
     return (
         <CartItem>
             <RemoveButton>❌</RemoveButton>
@@ -105,9 +112,9 @@ export default ({ data, price }: { data: ICartItem, price: number }) => {
                 </Column>
                 <Column>
                     <Quantity>
-                        <QuantityButton>-</QuantityButton>
+                        <QuantityButton onClick={() => handleQuantity("minus")} disabled={data.quantity === 1}>-</QuantityButton>
                         <span>{data.quantity}</span>
-                        <QuantityButton>+</QuantityButton>
+                        <QuantityButton onClick={() => handleQuantity("plus")}>+</QuantityButton>
                     </Quantity>
                 </Column>
                 <Column><div><Price>${price.toFixed(2)}</Price></div></Column>

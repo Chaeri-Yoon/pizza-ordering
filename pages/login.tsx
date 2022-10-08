@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { ILoginInput } from './api/login';
 import useLoginRequest from '../lib/useLoginRequest';
 import { Main } from '../components/styles/PageStyleComponents';
-import { Form, FormInputContainer, FormSubmitButton } from '../components/styles/FormStyleComponents';
+import { Form, FormInputContainer } from '../components/styles/FormStyleComponents';
 import styled from 'styled-components';
 
 const LoginMain = styled(Main)`
@@ -38,7 +38,7 @@ const Login: NextPage = () => {
                         <input {...register("password", { required: "Enter your password" })} type="password" placeholder="password" />
                     </FormInputContainer>
                     {loginMessage && <LoginMessageText>{loginMessage}</LoginMessageText>}
-                    <FormSubmitButton disabled={!isValid}>Sign In</FormSubmitButton>
+                    <button disabled={!isValid}>Sign In</button>
                 </Form>
             </LoginMain>
         </Fragment>

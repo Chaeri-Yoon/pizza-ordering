@@ -31,7 +31,11 @@ button {
   padding: 0.5em 1em;
   border-radius: 0.2em;
   border: transparent;
-  background-color: transparent;
+  background-color: #efeded;
+}
+
+button:disabled {
+  background-color: rgba(239, 239, 239, 0.3);
 }
 
 button:hover {
