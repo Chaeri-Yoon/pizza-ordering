@@ -11,7 +11,8 @@ const RemoveButton = styled.button`
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    left: -3em;
+    right: 0em;
+    background-color: transparent;
 `;
 const Columns = styled.div`
     width: 100%;
@@ -104,7 +105,6 @@ export default ({ data, price }: { data: ICartItem, price: number }) => {
     }
     return (
         <CartItem>
-            <RemoveButton onClick={handleRemove}>❌</RemoveButton>
             <Columns>
                 <Column>
                     <div>
@@ -131,6 +131,7 @@ export default ({ data, price }: { data: ICartItem, price: number }) => {
                 </Column>
                 <Column><div><Price>${price.toFixed(2)}</Price></div></Column>
             </Columns>
+            <RemoveButton onClick={handleRemove}>❌</RemoveButton>
         </CartItem>
     )
 }
