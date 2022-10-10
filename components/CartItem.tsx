@@ -81,18 +81,30 @@ const Price = styled.span`
 export default ({ data, price }: { data: ICartItem, price: number }) => {
     const { mutate } = useSWRConfig();
     const [updateCart] = useMutationApi(`/api/cart/${data._id}`);
+    const handleRemove = () => {
+        mutate('/api/cart', (prev: ICartResponse) => {
+            const cartList = prev.cartList as ICartItem[];
+            const newCartList = cartList.filter(cart => cart._id !== data._id);
+            return { ...prev, cartList: [...newCartList] };
+        }, false);
+        updateCart(undefined, 'DELETE');
+    }
     const handleQuantity = (operation: "minus" | "plus") => {
         const quantity = data.quantity + ((operation === "minus" ? -1 : 1) * 1);
         mutate('/api/cart', (prev: ICartResponse) => {
             const cartList = prev.cartList as ICartItem[];
-            const index = cartList?.findIndex(cart => cart._id == data._id);
-            return { ...prev, cartList: [...cartList.slice(0, index), { ...cartList[index], quantity }, ...cartList.slice(index + 1)] };
+            cartList.some((_, index) => {
+                const isSelected = cartList[index]._id === data._id;
+                if (isSelected) cartList[index].quantity = quantity;
+                return isSelected;
+            })
+            return { ...prev, cartList: [...cartList] };
         }, false);
         updateCart({ quantity }, 'PATCH');
     }
     return (
         <CartItem>
-            <RemoveButton>❌</RemoveButton>
+            <RemoveButton onClick={handleRemove}>❌</RemoveButton>
             <Columns>
                 <Column>
                     <div>

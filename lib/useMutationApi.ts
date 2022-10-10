@@ -8,7 +8,7 @@ interface IState<T> {
 export interface IStateData {
     ok: boolean
 }
-type IResult<T, S> = [(receivedData?: S, method?: 'PATCH' | 'POST') => void, IState<T>]
+type IResult<T, S> = [(receivedData?: S, method?: 'PATCH' | 'DELETE' | 'POST') => void, IState<T>]
 export default <T extends IStateData, S>(url: string): IResult<T, S> => {
     const [state, setState] = useState<IState<T>>({
         loading: false,
